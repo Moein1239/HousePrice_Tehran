@@ -8,6 +8,8 @@ import numpy as np
 import os
 from django.conf import settings
 
+
+
 # یکبار مدل و اسکِیلر را لود کن (با مسیر نسبی به BASE_DIR)
 BASE_DIR = settings.BASE_DIR  # از تنظیمات Django
 MODEL_PATH = os.path.join(BASE_DIR, "house_price_xgb_final.joblib")
@@ -42,19 +44,22 @@ class PredictPrice(APIView):
             return Response({"error": "Model/scaler missing", "details": err}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         data = serializer.validated_data
-        # ترتیب فیلدها باید مثل آموزش باشه
+        
         features = np.array([[
             data["Priceـperـsquareـmeter"],
             data["Area"],
-            data["Avg_Price_By_address"],
+            data["Parking"],
             data["Room"],
-            data["Address"]
+            data["Address"],
+            data["Warehouse"],
+            data["Elevator"]
         ]], dtype=float)
 
         # scale و predict
         scaled = scaler.transform(features)
         pred = model.predict(scaled)[0]
         # معمولاً Price بر حسب تومان است؛ در صورت نیاز رُند کن
-        return Response({"predicted_price": float(round(pred, 2))})
+        formatted_price = f"{int(pred):,} تومان"
+        return Response({"predicted_price": formatted_price})
 
 # Create your views here.
