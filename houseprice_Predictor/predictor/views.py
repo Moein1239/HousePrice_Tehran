@@ -8,15 +8,15 @@ import numpy as np
 import os
 from django.conf import settings
 
-# === مسیر اصلی پروژه ===
+#  مسیر اصلی پروژه 
 BASE_DIR = settings.BASE_DIR
 
-# === مسیر فایل‌های مدل، اسکیلر و انکودر ===
+#  مسیر فایل‌های مدل، اسکیلر و انکودر 
 MODEL_PATH = os.path.join(BASE_DIR, "house_price_xgb_final.joblib")
 SCALER_PATH = os.path.join(BASE_DIR, "scaler.joblib")
 ENCODER_PATH = os.path.join(BASE_DIR, "address_encoder.joblib")
 
-# === لود مدل‌ها فقط یک‌بار در زمان شروع سرور ===
+#  لود مدل‌ها فقط یک‌بار در زمان شروع سرور 
 try:
     model = joblib.load(MODEL_PATH)
 except Exception as e:
@@ -35,7 +35,7 @@ except Exception as e:
     encoder = None
     _encoder_load_error = str(e)
 
-# === API اصلی پیش‌بینی قیمت ===
+#  API اصلی پیش‌بینی قیمت 
 class PredictPrice(APIView):
     def post(self, request):
         # اعتبارسنجی ورودی‌ها
@@ -57,7 +57,7 @@ class PredictPrice(APIView):
 
         data = serializer.validated_data
 
-        # === تبدیل آدرس از متن به مقدار عددی ===
+        #  تبدیل آدرس از متن به مقدار عددی 
         try:
             address_encoded = int(encoder.transform([data["Address"]])[0])
         except Exception:
@@ -66,7 +66,7 @@ class PredictPrice(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # === ساخت آرایه ویژگی‌ها (features) ===
+        #  ساخت آرایه ویژگی‌ها (features) 
         try:
             features = np.array([[
                 data["Priceـperـsquareـmeter"],
@@ -80,14 +80,14 @@ class PredictPrice(APIView):
         except KeyError as e:
             return Response({"error": f"Feature missing: {str(e)}"}, status=400)
 
-        # === نرمال‌سازی و پیش‌بینی ===
+        #  نرمال‌سازی و پیش‌بینی 
         try:
             scaled = scaler.transform(features)
             pred = model.predict(scaled)[0]
         except Exception as e:
             return Response({"error": f"Prediction failed: {str(e)}"}, status=500)
 
-        # === فرمت خروجی ===
+        #  فرمت خروجی
         formatted_price = f"{int(pred):,} تومان"
         response_data = {"status": "success","input_data": data,"prediction": {
                 "price_toman": formatted_price,
