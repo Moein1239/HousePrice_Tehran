@@ -8,4 +8,3 @@ class HouseDataSerializer(serializers.Serializer):
     Parking = serializers.FloatField()
     Room = serializers.FloatField()
     Address= serializers.CharField()
-    

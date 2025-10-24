@@ -1,0 +1,119 @@
+body {
+    font-family: "IRANSans", "Vazirmatn", sans-serif;
+    background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+    margin: 0;
+    direction: rtl;
+}
+
+.container {
+    max-width: 480px;
+    margin: 70px auto;
+    background: white;
+    padding: 35px 45px;
+    border-radius: 22px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.10);
+    animation: fadeIn 0.6s ease;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #0f172a;
+    font-size: 26px;
+    font-weight: 700;
+}
+
+label {
+    font-size: 15px;
+    color: #1e293b;
+    margin-bottom: 6px;
+    display: block;
+    font-weight: 600;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid #cbd5e1;
+    margin-bottom: 18px;
+    font-size: 14px;
+    transition: 0.3s;
+    background-color: #f8fafc;
+}
+
+input:focus, select:focus {
+    border-color: #3b82f6;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.25);
+    outline: none;
+}
+
+button {
+    width: 100%;
+    background: #3b82f6;
+    border: none;
+    padding: 14px;
+    border-radius: 14px;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-weight: 600;
+}
+
+button:hover {
+    background: #2563eb;
+    transform: translateY(-2px);
+}
+
+.result {
+    
+    margin-top: 28px;
+    padding: 25px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    border-radius: 18px;
+    font-size: 26px;
+    text-align: center;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    box-shadow: 0 12px 28px rgba(16,185,129,0.35);
+    animation: pricePop 0.35s ease-out;
+}
+
+@keyframes pricePop {
+    from { transform: scale(0.92); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+
+.error {
+    margin-top: 24px;
+    padding: 18px 22px;
+    background: linear-gradient(135deg, #f87171, #ef4444);
+    color: #fff;
+    border-radius: 16px;
+    border: none;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    box-shadow: 0 10px 25px rgba(239,68,68,0.35);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    animation: fadeIn 0.35s ease-out;
+}
+
+.error:before {
+    content: "⚠️";
+    font-size: 22px;
+}
+
+/* انیمیشن */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}

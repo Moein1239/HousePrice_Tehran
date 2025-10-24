@@ -1,105 +1,73 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="fa">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>پیش‌بینی قیمت خانه</title>
-  <style>
-    body { font-family: "Vazir", sans-serif; background: #f3f3f3; direction: rtl; text-align: right; margin: 50px; }
-    h1 { color: #333; text-align: center; }
-    form { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 0 10px rgba(0,0,0,0.1); max-width: 500px; margin: auto; }
-    label { display: block; margin-top: 10px; }
-    input, select { width: 100%; padding: 8px; margin-top: 5px; border-radius: 5px; border: 1px solid #ccc; }
-    button { margin-top: 15px; width: 100%; background: #0078ff; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; }
-    button:hover { background: #005fcc; }
-    #result { text-align: center; margin-top: 20px; font-size: 20px; font-weight: bold; padding: 15px; border-radius: 10px; }
-    .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-    .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-  </style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>House Price in Tehran</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-  <h1>🧠 پیش‌بینی قیمت خانه در تهران</h1>
+    <div class="container">
+        <h1>پیش‌ بینی قیمت خانه در تهران </h1>
+        <form method="POST">
+            {% csrf_token %}
+            
+            <label>حدود قیمت هر متر مربع ( تومان)</label>
+            <input type="number" name="Priceـperـsquareـmeter" step="1000" placeholder=" مثلا :68,500,0000 " required>
 
-  <form id="predictForm">
-    <label>قیمت هر متر (تومان):</label>
-    <input type="number" id="price_per_m2" required>
+            <label> نام خیابان :</label>
+            <input list="addresses" name="address" placeholder=" نام خیابان" required>
+            <datalist id="addresses">
+                {% for a in address_choices %}
+                    <option value="{{ a }}"></option>
+                {% endfor %}
+            </datalist>
 
-    <label>متراژ:</label>
-    <input type="number" id="area" required>
+            <label>متراژ  (برحسب متر مربع ) :</label>
+            <input type="number" name="area" step="0.01" placeholder="متراژ  " required>
 
-    <label>تعداد اتاق:</label>
-    <input type="number" id="room" required>
+            <label>تعداد اتاق  : </label>
+            <input type="number" name="rooms" placeholder="تعداد اتاق ها " required>
+            
+            <label>پارکینگ :</label>
+            <select name="parking" required>
+                <option value="1">دارد</option>
+                <option value="0">ندارد</option>
+            </select>
 
-    <label>پارکینگ:</label>
-    <select id="parking">
-      <option value="1">دارد</option>
-      <option value="0">ندارد</option>
-    </select>
+            <label>انبار :</label>
+            <select name="warehouse" required>
+                <option value="1">دارد</option>
+                <option value="0">ندارد</option>
+            </select>
 
-    <label>انبار:</label>
-    <select id="warehouse">
-      <option value="1">دارد</option>
-      <option value="0">ندارد</option>
-    </select>
+            <label>آسانسور :</label>
+            <select name="elevator" required>
+                <option value="1">دارد</option>
+                <option value="0">ندارد</option>
+            </select>
 
-    <label>آسانسور:</label>
-    <select id="elevator">
-      <option value="1">دارد</option>
-      <option value="0">ندارد</option>
-    </select>
+            <button type="submit">پیش‌بینی کن</button>
+        </form>
 
-    <label>نام خیابان:</label>
-    <input type="text" id="address" placeholder="مثلاً ونک" required>
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
 
-    <button type="submit">🔮 پیش‌بینی کن</button>
-  </form>
+        {% if prediction %}
+            <div class="result">قیمت پیش بینی شده : {{ prediction }} تومان </div>
+        {% endif %}
+        {% if negative_input_warning %}
+        <div class="error">{{ negative_input_warning }}</div>
+        {% endif %}
+        
 
-  <div id="result"></div>
 
-  <script>
-    document.getElementById("predictForm").addEventListener("submit", async function(e) {
-      e.preventDefault();
 
-      // 🔥 نام‌های دقیق از خطای Django!
-      const formData = {
-        "Priceـperـsquareـmeter": parseInt(document.getElementById("price_per_m2").value),
-        "Area": parseInt(document.getElementById("area").value),
-        "Room": parseInt(document.getElementById("room").value),
-        "Parking": parseInt(document.getElementById("parking").value),
-        "Warehouse": parseInt(document.getElementById("warehouse").value),
-        "Elevator": parseInt(document.getElementById("elevator").value),
-        "Address": document.getElementById("address").value.trim()
-      };
+    </div>
+    
 
-      const resultDiv = document.getElementById("result");
-      resultDiv.innerText = "⏳ در حال پیش‌بینی...";
-      resultDiv.className = "";
-
-      try {
-        const response = await fetch("/api/predict/", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData)
-        });
-
-        const result = await response.json();
-        console.log("✅ FINAL RESULT:", result);
-
-        if (response.ok) {
-          const price = result.prediction?.price_toman || result.predicted_price || result.price;
-          resultDiv.innerText = `🏠 قیمت پیش‌بینی‌شده: ${price?.toLocaleString()} تومان`;
-          resultDiv.className = "success";
-
-        } else {
-          resultDiv.innerText = `❌ خطا: ${JSON.stringify(result)}`;
-          resultDiv.className = "error";
-        }
-
-      } catch (err) {
-        resultDiv.innerText = "⚠️ خطای شبکه";
-        resultDiv.className = "error";
-      }
-    });
-  </script>
 </body>
 </html>
