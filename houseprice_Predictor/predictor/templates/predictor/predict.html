@@ -14,7 +14,7 @@
         <form method="POST">
             {% csrf_token %}
             
-            <label>حدود قیمت هر متر مربع ( تومان)</label>
+            <label>حدود قیمت مد نظر خریدار برای هر متر مربع ( تومان)</label>
             <input type="number" name="Priceـperـsquareـmeter" step="1000" placeholder=" مثلا :68,500,0000 " required>
 
             <label> نام خیابان :</label>
@@ -49,7 +49,7 @@
                 <option value="0">ندارد</option>
             </select>
 
-            <button type="submit">پیش‌بینی کن</button>
+            <button type="submit">پیش‌ بینی کن</button>
         </form>
 
         {% if error %}
@@ -63,9 +63,6 @@
         <div class="error">{{ negative_input_warning }}</div>
         {% endif %}
         
-
-
-
     </div>
     
 

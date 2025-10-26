@@ -81,7 +81,7 @@ def predict_price(request):
     prediction = None
     error = None
     negative_input_warning = None  
-
+        
     if request.method == "POST":
         try:
             Priceـperـsquareـmeter = float(request.POST.get('Priceـperـsquareـmeter', 0))
@@ -91,8 +91,8 @@ def predict_price(request):
             parking = int(request.POST.get('parking', 0))
             rooms = int(request.POST.get('rooms', 0))
             address = request.POST.get('address', '')
-            
-        
+
+
 
             if address in list(address_encoder.classes_):
                 address_num = int(address_encoder.transform([address])[0])
@@ -114,11 +114,15 @@ def predict_price(request):
 
     address_choices = list(address_encoder.classes_)
     
-
-
+    
     return render(request, "predictor/predict.html", {
         "prediction": prediction,
         "error": error,
         "negative_input_warning": negative_input_warning,
         "address_choices": address_choices
     })
+
+from django.shortcuts import render
+
+def home(request):
+    return render(request, 'predictor/home.html')
