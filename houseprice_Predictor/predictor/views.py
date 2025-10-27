@@ -109,6 +109,11 @@ def predict_price(request):
                 negative_input_warning = "The inputs are unrealistic, the prediction was negative. Please adjust the inputs."
             else:
                 prediction = f"{int(round(pred)):,}"
+
+
+            actual_price_per_meter = pred / area
+            actual_price_per_meter = f"{int(round(actual_price_per_meter)):,}"
+
         except Exception as e:
             error = str(e)
 
@@ -117,6 +122,7 @@ def predict_price(request):
     
     return render(request, "predictor/predict.html", {
         "prediction": prediction,
+        "actual_price_per_meter": actual_price_per_meter if prediction else None,
         "error": error,
         "negative_input_warning": negative_input_warning,
         "address_choices": address_choices

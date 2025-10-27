@@ -57,8 +57,13 @@
         {% endif %}
 
         {% if prediction %}
-            <div class="result">قیمت پیش بینی شده : {{ prediction }} تومان </div>
+        <div class="result">
+            <div style="font-size: 22px; margin-bottom: 10px;">قیمت پیش بینی شده : <span style="font-weight:900;">{{ prediction }} تومان</span></div>
+            <div style="font-size: 18px; opacity: .9;"> قیمت دقیق پیش‌ بینی شده هر متر: <span style="font-weight:700;">{{ actual_price_per_meter }} تومان</span></div>
+        </div>
         {% endif %}
+
+
         {% if negative_input_warning %}
         <div class="error">{{ negative_input_warning }}</div>
         {% endif %}
