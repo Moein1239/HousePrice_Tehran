@@ -36,7 +36,6 @@ Features
 High-accuracy ML model (R² ≈ 0.98)
 REST API for predictions
 Modern and responsive UI
-Accepts Persian or English addresses
 
 Ready for deployment
 
